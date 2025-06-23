@@ -1,0 +1,6 @@
+path: ./output_blender
+train: images
+val: images            # quick demo – uses same set
+nc: 1
+names: [can]
+

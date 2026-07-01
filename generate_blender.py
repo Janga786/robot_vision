@@ -1,44 +1,47 @@
 """
-generate_blender.py — Synthetic data generator for a single‑class YOLO dataset
------------------------------------------------------------------------------
-[VERSION 3.0 - FINAL]
-• Loads one or more 3‑D models of objects (OBJ / GLB / GLTF)
-• Randomises camera position, zoom, object scale / pose / location and lighting
-• Composites rendered objects onto random real-world background images
-• Renders PNGs plus YOLO‑formatted labels   (class 0  cx  cy  w  h)
-• Compatible with Blender ≥ 2.80 (tested 3.x)
+generate_blender.py — Synthetic data generator for a single-class YOLO dataset
+------------------------------------------------------------------------------
+- Loads one or more 3D object models (GLB / GLTF)
+- Randomises camera position, focal length, object scale / pose / location,
+  and lighting for every frame (domain randomisation)
+- Composites the rendered object onto random real-world background images
+- Writes PNG images plus YOLO-format labels (class cx cy w h, normalised)
+- Compatible with Blender >= 2.80 (tested with 3.x)
 
-HOW TO RUN (headless):
+How to run (headless, from the repository root):
   blender --background --python generate_blender.py
 
-Edit the *CONFIG* section below to point at your model paths and output dir.
+Edit the CONFIG section below to change models, output paths, or
+randomisation ranges.
 """
 
+import os
+
 # ────────────────────────────────────────────────────────────────────────────
-# CONFIG — set these paths to match your system
-# ───────────────────────────────────────────────────────────────────────────
+# CONFIG
+# ────────────────────────────────────────────────────────────────────────────
+REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 MODELS = [
-    # Use the new, ready-to-go .glb file
-    "/home/janga/YOLO/models/yerba_mate_final.glb",
+    os.path.join(REPO_ROOT, "models", "yerba_mate_final.glb"),
 ]
 
-BACKGROUNDS_DIR = "/home/janga/YOLO/backgrounds"
+BACKGROUNDS_DIR = os.path.join(REPO_ROOT, "backgrounds")
 
 NUM_IMAGES  = 1000
-OUTPUT_DIR  = "/home/janga/YOLO/output_blender"
+OUTPUT_DIR  = os.path.join(REPO_ROOT, "output_blender")
 IMAGE_RES   = (640, 640)
 CLASS_ID    = 0
 
 # --- RANDOMIZATION SETTINGS ---
 
-# ✅ ADJUSTED: Camera is now closer to the object on average
 CAM_RAD_MIN, CAM_RAD_MAX = 0.6, 1.2  # Camera distance from origin (metres)
 CAM_ELEV_MIN, CAM_ELEV_MAX = 10, 50  # Camera elevation (degrees)
 
-# ✅ NEW: Camera Focal Length (Zoom). Higher number = more zoomed in.
-FOCAL_MIN, FOCAL_MAX = 40, 80        # In millimeters
+# Camera focal length (zoom); higher values are more zoomed in
+FOCAL_MIN, FOCAL_MAX = 40, 80        # In millimetres
 
-# ✅ ADJUSTED: Object scale is slightly larger for more presence
+# Object scale range
 SCALE_MIN, SCALE_MAX = 1.2, 1.8
 
 # Random object placement range (X, Y) in metres from the center
@@ -50,7 +53,6 @@ LIGHT_PWR_MIN, LIGHT_PWR_MAX = 800, 1500
 
 # ----------------------------------------------------------------------------
 import bpy
-import os
 import random
 import math
 from mathutils import Vector
@@ -156,7 +158,7 @@ def randomise_object(obj):
 
 
 def randomise_camera(cam_obj):
-    """✅ UPDATED: Randomize camera position, rotation, and now zoom."""
+    """Randomize camera position, rotation, and focal length."""
     # Set camera zoom (focal length)
     cam_obj.data.lens = random.uniform(FOCAL_MIN, FOCAL_MAX)
 
@@ -244,7 +246,7 @@ def main():
         
         imported_objs = import_model(random.choice(MODELS))
         
-        # ✅ FIXED: Find the actual MESH object from the import, not just the first object.
+        # Find the actual MESH object from the import, not just the first object.
         # This handles cases where the glb/gltf has a parent "Empty" object.
         obj = None
         for o in imported_objs:
@@ -286,7 +288,7 @@ def main():
         frame_num += 1
         print(f'Rendered {rendered}/{NUM_IMAGES} -> {base_filename}.png')
 
-    print(f'\n✅ DONE — Synthetic dataset with {NUM_IMAGES} images stored in {OUTPUT_DIR}')
+    print(f'\nDONE — Synthetic dataset with {NUM_IMAGES} images stored in {OUTPUT_DIR}')
 
 
 if __name__ == '__main__':

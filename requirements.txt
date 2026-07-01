@@ -1,4 +1,10 @@
+# Background image downloader
+requests
+
+# Image handling utilities
 opencv-python
 Pillow
 numpy
 
+# YOLO training (Ultralytics YOLO11)
+ultralytics

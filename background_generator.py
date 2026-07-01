@@ -1,9 +1,18 @@
-import os, requests
+"""
+background_generator.py — Download background images for scene compositing.
+
+Populates the backgrounds/ directory with real-world photos that the
+synthetic data generator composites rendered objects onto. Add or replace
+URLs below to change the background set.
+"""
+
+import os
+import requests
 
 urls = [
     "https://upload.wikimedia.org/wikipedia/commons/0/08/Kitchen_Background_1.jpg",
     "https://upload.wikimedia.org/wikipedia/commons/9/94/Kitchen_Background_2.jpg",
-    # …add more links if you like
+    # Add more image URLs here to expand the background set.
 ]
 
 headers = {"User-Agent": "Mozilla/5.0 (DataGenBot/1.0)"}
@@ -15,7 +24,6 @@ for i, url in enumerate(urls):
         r.raise_for_status()
         with open(f"backgrounds/bg_{i}.jpg", "wb") as f:
             f.write(r.content)
-        print(f"✅ bg_{i}.jpg")
+        print(f"Saved backgrounds/bg_{i}.jpg")
     except Exception as e:
-        print(f"❌ {url.split('/')[-1]} — {e}")
-
+        print(f"Failed: {url.split('/')[-1]} — {e}")

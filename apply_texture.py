@@ -1,14 +1,27 @@
+"""
+apply_texture.py — Bake a texture image onto a scanned mesh and export a
+packed .glb ready for the synthetic data generator.
+
+Run headless with the raw scan open in Blender, e.g.:
+  blender your_scan.blend --background --python apply_texture.py
+"""
+
 import bpy
 import os
+from mathutils import Vector
 
 # -----------------------------------------------------------------------------
 # EDIT THESE VALUES
 # -----------------------------------------------------------------------------
-# 1. The FULL, absolute path to your texture image.
-TEXTURE_FILE_PATH = "/home/janga/Downloads/yerba-mate/source/Scaniverse/Scaniverse.jpg"
+REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# 2. The FULL, absolute path where you want to save the final, packed model.
-OUTPUT_GLB_PATH = "/home/janga/YOLO/models/yerba_mate_FINAL.glb"
+# 1. Path to the texture image to apply.
+TEXTURE_FILE_PATH = os.path.join(
+    REPO_ROOT, "assets", "sample_can_model", "textures", "tex_u0_v0.jpeg"
+)
+
+# 2. Path where the final, packed model will be saved.
+OUTPUT_GLB_PATH = os.path.join(REPO_ROOT, "models", "yerba_mate_final.glb")
 # -----------------------------------------------------------------------------
 
 
@@ -85,4 +98,4 @@ bpy.ops.export_scene.gltf(
     use_selection=True
 )
 
-print("\n✅ DONE. Command-line process complete. 'yerba_mate_FINAL.glb' has been created.")
+print(f"\nDONE. Packed model written to {OUTPUT_GLB_PATH}")

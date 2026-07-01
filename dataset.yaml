@@ -1,6 +1,8 @@
+# Ultralytics YOLO dataset configuration for the generated synthetic dataset.
+# Note: this demo configuration validates on the training images. Replace
+# `val` with a held-out split for meaningful evaluation.
 path: ./output_blender
 train: images
-val: images            # quick demo – uses same set
+val: images
 nc: 1
 names: [can]
-

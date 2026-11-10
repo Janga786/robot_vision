@@ -1,6 +1,14 @@
 # Robot Vision: Synthetic Data Generation for Object Detection
 
-A Blender-based pipeline that generates fully labeled synthetic training data for object detection, plus the configuration to train an Ultralytics YOLO model on the result. It was built to train perception models for robotic manipulation and inspection tasks (Sawyer/Baxter platforms), where collecting and hand-labeling thousands of real images per object is impractical. Instead, a single photogrammetry scan of the target object is rendered under randomized cameras, poses, and lighting, composited onto real-world background photos, and exported with pixel-accurate YOLO bounding-box labels — no manual annotation required. The repository includes a complete worked example using a scanned beverage can as the target object.
+A Blender pipeline that turns one photogrammetry scan of an object into a labeled synthetic dataset for object detection, plus the config to train an Ultralytics YOLO model on it. The scan is rendered under randomized cameras, poses and lighting, composited onto background photos, and saved with YOLO bounding-box labels computed from the mesh, so no manual annotation is needed. The worked example is a scanned yerba mate can.
+
+I built this in summer 2025 during my research assistantship with Dr. Kevin Wedeward at Fort Lewis College, to train perception models for manipulation and inspection on the Sawyer and Baxter robots. The thermal hotspot detector from the solar-panel inspection project is not in this repository.
+
+![Training batch of synthetic yerba mate can images](yolo_model/train/train_batch0.jpg)
+
+*A training batch from the example YOLO11s run: rendered cans over random backgrounds with the generated boxes, after Ultralytics mosaic augmentation.*
+
+**Limits.** All data is synthetic. `dataset.yaml` validates on the training images, so the example run gives no held-out score, and nothing here is tested on real photos. Trained weights are not included in this repository (a copy of the example run's weights is in [CV-YOLO-Inspection](https://github.com/Janga786/CV-YOLO-Inspection), `models/trained_model.zip`).
 
 ## Pipeline
 
@@ -54,7 +62,7 @@ Key details of the generator (`generate_blender.py`):
 
 ## Requirements
 
-- [Blender](https://www.blender.org/) 2.80 or newer (developed and tested with 3.x). The generator scripts run inside Blender's bundled Python, so `bpy` does not need to be installed separately.
+- [Blender](https://www.blender.org/) 2.80 or newer. The generator scripts run inside Blender's bundled Python, so `bpy` does not need to be installed separately.
 - Python 3.8+ for the helper script and training:
 
 ```bash
@@ -114,7 +122,7 @@ Each label file contains one line per object in standard YOLO format: class id f
 yolo detect train data=dataset.yaml model=yolo11s.pt epochs=20 imgsz=640 batch=16
 ```
 
-`yolo_model/train/` contains example artifacts from such a run (the full `args.yaml` plus label-distribution and training-batch visualizations). The training-batch images show the synthetic composites as the network sees them: the rendered can at varied scales and poses over real backgrounds, with the generated boxes overlaid.
+`yolo_model/train/` contains artifacts from such a run (the full `args.yaml` plus label-distribution and training-batch plots). That run named its single class `yerba_mate`; the `dataset.yaml` in this repository names it `can`.
 
 Note that `dataset.yaml` validates on the training images for demonstration purposes; hold out a separate split (or real photos of the object) for meaningful evaluation.
 
@@ -127,4 +135,4 @@ Note that `dataset.yaml` validates on the training images for demonstration purp
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

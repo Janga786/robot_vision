@@ -8,7 +8,7 @@ I built this in summer 2025 during my research assistantship with Dr. Kevin Wede
 
 *A training batch from the example YOLO11s run: rendered cans over random backgrounds with the generated boxes, after Ultralytics mosaic augmentation.*
 
-**Limits.** All data is synthetic. `dataset.yaml` validates on the training images, so the example run gives no held-out score, and nothing here is tested on real photos. Trained weights are not included in this repository (a copy of the example run's weights is in [CV-YOLO-Inspection](https://github.com/Janga786/CV-YOLO-Inspection), `models/trained_model.zip`).
+**Limits.** All data is synthetic. `dataset.yaml` validates on the training images, so a run with it gives no held-out score; the example run's data file is not included. Nothing here is tested on real photos. Trained weights are not included in this repository (a copy of the example run's weights is in [CV-YOLO-Inspection](https://github.com/Janga786/CV-YOLO-Inspection), `models/trained_model.zip`).
 
 ## Pipeline
 
